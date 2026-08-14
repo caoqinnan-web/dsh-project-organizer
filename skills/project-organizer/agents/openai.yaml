@@ -1,0 +1,4 @@
+interface:
+  display_name: "Project Organizer"
+  short_description: "Turn scattered project context into clear next actions"
+  default_prompt: "Use $project-organizer to reconstruct this project into a clear, actionable workspace with the minimum necessary documentation."

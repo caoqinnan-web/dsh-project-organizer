@@ -1,0 +1,73 @@
+{
+  "name": "dsh-project-organizer",
+  "version": "0.1.0",
+  "description": "Project Context Engineering for AI agents: turn messy project context into a clear, actionable workspace.",
+  "type": "module",
+  "main": "lib/index.js",
+  "types": "lib/types/index.d.ts",
+  "license": "MIT",
+  "author": "caoqinnan-web",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/caoqinnan-web/dsh-project-organizer.git"
+  },
+  "homepage": "https://github.com/caoqinnan-web/dsh-project-organizer#readme",
+  "bugs": {
+    "url": "https://github.com/caoqinnan-web/dsh-project-organizer/issues"
+  },
+  "keywords": [
+    "dsh-plugin",
+    "deepseek-harness",
+    "agent-skills",
+    "ai-agents",
+    "context-engineering",
+    "project-management"
+  ],
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "build": "tsc -p tsconfig.json",
+    "test": "node --test test/*.test.mjs",
+    "check": "npm run typecheck && npm run build && npm test",
+    "prepack": "npm run check"
+  },
+  "peerDependencies": {
+    "@deepseek-ai/cordis": "^4.0.1",
+    "@deepseek-ai/dsh-skill": "^0.1.0-rc.5"
+  },
+  "devDependencies": {
+    "@deepseek-ai/cordis": "^4.0.1",
+    "@deepseek-ai/dsh-skill": "^0.1.0-rc.5",
+    "@types/node": "^26.0.0",
+    "typescript": "^7.0.0"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  },
+  "exports": {
+    ".": {
+      "types": "./lib/types/index.d.ts",
+      "default": "./lib/index.js"
+    },
+    "./cordis.patch.yml": "./cordis.patch.yml",
+    "./skills/project-organizer/SKILL.md": "./skills/project-organizer/SKILL.md",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "lib",
+    "src",
+    "skills/project-organizer/SKILL.md",
+    "skills/project-organizer/agents/openai.yaml",
+    "cordis.patch.yml",
+    "README.md",
+    "README.zh-CN.md",
+    "LICENSE"
+  ],
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}
