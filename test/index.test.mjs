@@ -3,16 +3,19 @@ import { readFile } from 'node:fs/promises'
 import test from 'node:test'
 import { apply, parseSkill } from '../lib/index.js'
 
-test('parses the packaged Skill and keeps the six-stage workflow', async () => {
+test('parses the packaged Skill and keeps the conversation-renaming workflow', async () => {
   const markdown = await readFile(new URL('../skills/project-organizer/SKILL.md', import.meta.url), 'utf8')
   const skill = parseSkill(markdown)
 
   assert.equal(skill.name, 'project-organizer')
-  assert.match(skill.description, /project workspace/i)
-  for (const stage of ['Inspect', 'Understand', 'Distill', 'Structure', 'Archive', 'Handoff']) {
+  assert.match(skill.description, /conversation/i)
+  assert.match(skill.description, /rename/i)
+  for (const stage of ['Scope', 'Inventory', 'Read', 'Classify', 'Rename', 'Verify']) {
     assert.match(skill.content, new RegExp(`### \\d+\\. ${stage}`))
   }
-  assert.match(skill.content, /one `PROJECT\.md`/)
+  assert.match(skill.content, /Category｜Topic/)
+  assert.match(skill.content, /Do not create project summaries/)
+  assert.match(skill.content, /Do not archive, delete, move, merge/)
 })
 
 test('registers the Skill with the DSH runtime service', () => {

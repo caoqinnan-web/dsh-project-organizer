@@ -1,105 +1,94 @@
 ---
 name: project-organizer
-description: Turn messy project conversations, files, decisions, tasks, and fragmented context into a clear, actionable project workspace. Use when starting from scattered notes or chats, resuming an old project, consolidating project knowledge, preparing a handoff, reconstructing current status, or reducing excessive project documentation without losing facts, decisions, open questions, risks, or next actions.
+description: Rename project conversations from vague or misleading AI-generated titles into clear, content-based `Category｜Topic` names. Use when a user asks to organize, standardize, clean up, or batch rename the conversations or chats inside a project so each title reveals the conversation's purpose.
 ---
 
-# Project Organizer
+# Project Conversation Organizer
 
-Reconstruct the project's operational state so a human or another agent can continue without rereading the full history. Treat this as Project Context Engineering, not file tidying or a generic summary.
+Rename conversations in the selected project so the conversation list becomes an accurate, scannable index of the work. Base every title on the conversation's full content, not only its current title.
 
-## Operating principles
+## Boundaries
 
-- Inspect before editing. Read the available conversations, files, repository structure, notes, plans, and task records.
-- Separate facts, decisions, assumptions, proposals, and unresolved questions. Never promote an inference into a fact.
-- Prefer current source material over memory. Surface conflicts instead of silently merging them.
-- Create the minimum documentation needed to resume work. For a simple project, prefer one `PROJECT.md`.
-- Preserve provenance with links or paths to important source material when available.
-- Keep archival actions reversible. Never delete, overwrite, or move potentially important material without explicit approval.
-- Optimize for continuation: the result must make the next decision and next action obvious.
+- Work only inside the selected project.
+- Rename conversation titles only. Do not archive, delete, move, merge, or edit conversation content.
+- Do not create project summaries, handoff documents, task files, or `PROJECT.md`.
+- Treat the user's request to organize the selected project's conversation names as authorization to rename those titles, unless the user explicitly requests a preview, proposal, or dry run.
+- Before changing anything, verify that the host can list project conversations, read their content, rename them, and reread the result.
+- If the host lacks any required capability, do not claim completion. Produce a proposed old-to-new title mapping when possible and identify the missing capability.
+
+## Naming format
+
+Use exactly this format:
+
+```text
+Category｜Topic
+```
+
+- Use one full-width separator: `｜`.
+- Make `Category` a stable content class that helps related conversations sort together, such as `Project Management`, `Research`, `Writing`, `Development`, or `Troubleshooting`. Use the user's language.
+- Make `Topic` name the concrete subject or outcome of that conversation.
+- Keep the title concise but specific enough to distinguish it from other conversations in the same project.
+- Prefer the conversation's dominant purpose. Do not build a title by joining every minor subject.
+- Preserve an existing title when it already follows the format and accurately describes the content.
+- Never infer confidential facts or outcomes that are not present in the conversation.
+
+Examples:
+
+```text
+Help me look at this issue → Troubleshooting｜Login failure cause
+Weekly meeting notes → Project Management｜August progress and actions
+整理一下这份材料 → 文档整理｜客户访谈纪要定稿
+```
 
 ## Workflow
 
-### 1. Inspect
+### 1. Scope
 
-Establish the project boundary and inventory the available sources. Read representative and high-value content, including recent work, decisions, corrections, blockers, deliverables, and files referenced by other files.
+Confirm the selected project and exclude conversations outside it. If the project boundary cannot be determined safely, ask one focused question before renaming.
 
-Do not modify project files during this step. If the requested scope is ambiguous and choosing incorrectly could affect unrelated material, ask one focused question.
+### 2. Inventory
 
-### 2. Understand
+List every conversation in scope, following all available pagination, with its stable identifier, current title, project identifier, and update metadata when available. Keep the identifier-to-title mapping throughout the operation so duplicate or similar titles do not cause the wrong conversation to be renamed.
 
-Identify:
+### 3. Read
 
-- purpose and intended outcome;
-- current stage and completion state;
-- stakeholders, owners, and users;
-- constraints, dependencies, and important resources;
-- authoritative sources and conflicting accounts.
+Read the complete accessible message history for each conversation, following all available pagination. Include relevant accessible attachments, branches, and tool results when they materially change the conversation's purpose. Give extra weight to user corrections and later messages because they may supersede the opening request.
 
-State important uncertainty explicitly.
+Do not classify from the current AI-generated title alone.
 
-### 3. Distill
+### 4. Classify
 
-Classify project information into:
+Create one proposed `Category｜Topic` title for each conversation. Check the set as a whole:
 
-- verified facts;
-- decisions and their rationale;
-- completed outcomes;
-- active tasks and owners, when known;
-- open questions and assumptions;
-- risks, blockers, and dependencies;
-- historical context that still explains the present state.
+- reuse category wording consistently;
+- distinguish conversations with similar topics;
+- avoid generic topics such as `Discussion`, `Help`, `Analysis`, or `New chat`;
+- keep titles in the user's primary language unless the project uses another convention.
 
-Remove repetition while preserving user corrections, rejected options, and evidence that materially affects future work.
+### 5. Rename
 
-### 4. Structure
+If the user requested a preview, return the mapping without writing. Otherwise, rename every in-scope conversation whose proposed title is materially clearer or more accurate. Leave accurate, compliant titles unchanged. Use the stable conversation identifier for each write, and avoid writing when available update metadata shows that the conversation changed after inventory.
 
-Choose the smallest structure that remains usable.
+If one rename fails, record the failure and continue only when doing so cannot affect the wrong conversation.
 
-For a simple project, create or update one `PROJECT.md` containing:
+### 6. Verify
 
-```markdown
-# Project name
+Reread the project's conversation list after the writes. Confirm that:
 
-## Goal
-## Current status
-## Key context
-## Decisions
-## Open questions
-## Next actions
-## Resources
-```
+- every intended conversation is present;
+- every changed title matches the planned title;
+- every changed title contains exactly one `｜`;
+- the before-and-after inventory shows no out-of-scope title change;
+- available metadata shows no unexpected archive, deletion, move, or content change caused by the operation.
 
-For a growing project, split only overloaded sections. Common optional files are `DECISIONS.md`, `TASKS.md`, `STATUS.md`, and `CONTEXT.md`. Do not create empty files or duplicate the same information across documents.
+Retry a safe failed rename once only when the stable identifier still resolves to the same project and conversation snapshot. Otherwise report it as incomplete. State when the host lacks the metadata or audit surface needed to verify a boundary fully.
 
-Preserve an existing useful structure unless changing it has a clear continuation benefit.
+## Final report
 
-### 5. Archive
+Return a concise result containing:
 
-Mark stale, superseded, duplicate, or historical material and explain why it is no longer current. Prefer an archive section, archive directory, or recoverable platform archive.
-
-Before any move or archive, verify that current documentation retains the material facts, decisions, and provenance. Ask for approval before irreversible deletion or when archival confidence is low.
-
-### 6. Handoff
-
-Ensure the final workspace answers:
-
-1. What is this project and why does it exist?
-2. What has actually happened?
-3. What decisions are settled, and why?
-4. What is the current state?
-5. What remains uncertain, blocked, or risky?
-6. What should happen next, by whom, and in what order?
-7. Where are the authoritative resources?
-
-Finish with a concise report of files created or updated, material that was archived or left untouched, unresolved issues, and the next recommended action.
-
-## Quality check
-
-Before finishing, verify that:
-
-- every major claim is supported by source material or labeled as an inference;
-- current status is distinct from plans and aspirations;
-- next actions are concrete and ordered;
-- no important correction or unresolved decision disappeared during compression;
-- simple projects did not acquire unnecessary documentation;
-- archived material remains recoverable unless the user explicitly authorized deletion.
+- total conversations inspected;
+- number renamed and number left unchanged;
+- verified `old title → new title` mappings;
+- failures or host capability limitations;
+- explicit confirmation that no conversation content or project structure was changed.

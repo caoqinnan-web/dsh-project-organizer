@@ -1,7 +1,7 @@
 {
   "name": "dsh-project-organizer",
-  "version": "0.1.0",
-  "description": "Project Context Engineering for AI agents: turn messy project context into a clear, actionable workspace.",
+  "version": "0.2.0",
+  "description": "Rename project conversations into clear, content-based Category｜Topic titles.",
   "type": "module",
   "main": "lib/index.js",
   "types": "lib/types/index.d.ts",
@@ -20,8 +20,8 @@
     "deepseek-harness",
     "agent-skills",
     "ai-agents",
-    "context-engineering",
-    "project-management"
+    "chatgpt",
+    "conversation-management"
   ],
   "scripts": {
     "typecheck": "tsc -p tsconfig.json --noEmit",

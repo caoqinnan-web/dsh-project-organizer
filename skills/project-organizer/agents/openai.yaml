@@ -1,4 +1,4 @@
 interface:
-  display_name: "Project Organizer"
-  short_description: "Turn scattered project context into clear next actions"
-  default_prompt: "Use $project-organizer to reconstruct this project into a clear, actionable workspace with the minimum necessary documentation."
+  display_name: "Project Conversation Organizer"
+  short_description: "Rename project chats as clear Category｜Topic titles"
+  default_prompt: "Use $project-organizer to read every conversation in this project and rename unclear titles using the Category｜Topic format."

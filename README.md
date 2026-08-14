@@ -1,39 +1,65 @@
-# Project Organizer for DeepSeek Harness
+# Project Conversation Organizer
 
-Turn messy project conversations, files, decisions, and tasks into a clear, actionable project workspace.
+Rename vague AI-generated project conversation titles into clear, content-based `Category｜Topic` names.
 
-**Project Context Engineering for AI agents.**
+This repository packages a ChatGPT-verified conversation-organizing skill as an experimental DeepSeek Harness / DSH Skill and installable plugin.
 
 [中文说明](README.zh-CN.md)
 
-## Why this exists
+## Status
 
-Most project organizers sort files. Project Organizer reconstructs the project's operational state: what is true, what was decided, what remains unresolved, and what should happen next. The result is compact enough for another human or AI agent to continue the work without rereading the full history.
+| Environment | Status | Evidence |
+|---|---|---|
+| ChatGPT | Verified by the author | Directly invoking the installed skill renamed all conversations in the selected project. |
+| DeepSeek Harness / DSH | Experimental; not yet verified end to end | The repository contains and tests the DSH registration adapter, but the author has not tested live conversation discovery, reading, and renaming in DSH. |
 
-## What the skill does
+DSH can complete the workflow only if its host environment exposes capabilities to list project conversations, read their contents, rename them, and reread the results. The Skill detects missing capabilities and reports them instead of claiming success.
+
+## Origin
+
+This skill began in ChatGPT, not in DSH.
+
+Projects often accumulate many conversations whose titles were generated automatically by AI. Those titles can be vague, repetitive, or disconnected from what the conversation ultimately became, making it difficult to understand a project's contents from the conversation list.
+
+The author created and verified this skill in ChatGPT to solve that specific problem: read each conversation's full content, identify its overall category and concrete topic, then rename it in the form `Category｜Topic`. The goal is simple—a person should be able to understand what each conversation is for by looking at its title.
+
+This repository is the next step in that history: sharing the method publicly and testing whether the same workflow can be used through DeepSeek Harness.
+
+## What the Skill does
 
 ```text
-Inspect → Understand → Distill → Structure → Archive → Handoff
+Scope → Inventory → Read → Classify → Rename → Verify
 ```
 
-- Inspects conversations, files, notes, plans, tasks, and repository context before editing.
-- Separates verified facts, decisions, tasks, assumptions, open questions, and risks.
-- Uses the minimum-documentation principle: a simple project should usually have one `PROJECT.md`.
-- Preserves provenance and user corrections instead of flattening everything into a summary.
-- Keeps archive operations reversible and requires explicit approval for destructive deletion.
-- Produces a handoff that makes current state and next actions immediately visible.
+- Limits all operations to the selected project.
+- Reads conversation content instead of trusting the old AI-generated title.
+- Assigns a stable content category and a concrete topic.
+- Uses exactly one full-width separator: `Category｜Topic`.
+- Preserves accurate titles that already follow the convention.
+- Rereads the conversation list to verify every change.
 
-## Install
+It only changes conversation titles. It does not create `PROJECT.md`, summarize the project into files, edit messages, move conversations, archive conversations, or delete anything.
 
-### From npm (recommended after publication)
+## Use in ChatGPT
+
+With the skill installed in a ChatGPT project, invoke it directly, for example:
+
+```text
+Organize the names of all conversations in this project.
+Use Category｜Topic titles based on each conversation's full content.
+```
+
+The author has verified this direct invocation workflow in ChatGPT. This repository does not claim that npm is a ChatGPT Skill installation mechanism; the npm package exists for the DSH adapter.
+
+## Install in DSH (experimental)
+
+From npm:
 
 ```bash
 dsh plugin --profile web add dsh-project-organizer
 ```
 
-### From GitHub
-
-This repository commits its built `lib/` output, so GitHub installation does not require an install-time build script:
+From GitHub:
 
 ```bash
 dsh plugin --profile web add github:caoqinnan-web/dsh-project-organizer
@@ -45,45 +71,31 @@ For reproducible installs, pin a reviewed commit:
 dsh plugin --profile web add github:caoqinnan-web/dsh-project-organizer#<commit-sha>
 ```
 
-Restart the selected DSH surface after installation. The runtime registers `project-organizer` with `ctx.skills`, where it can be discovered by the model or invoked by the user.
+Restart the selected DSH surface after installation. The adapter registers `project-organizer` with `ctx.skills`.
 
-Verify the bundle layer without booting the profile:
+Verify the bundle layer without booting the full profile:
 
 ```bash
 dsh --profile web --dump-config
 ```
 
-The output should include the `dsh-project-organizer` bundle and a `project-organizer` plugin row.
+The output should include the `dsh-project-organizer` bundle and a `project-organizer` plugin row. This verifies plugin configuration, not the live conversation-renaming capability.
 
-## Use
+## Use in DSH (experimental)
 
-Ask DSH to:
+Ask DSH:
 
-- “Organize this project so another agent can continue it.”
-- “Reconstruct the current state from these conversations and files.”
-- “Prepare a clean project handoff with decisions, risks, and next actions.”
-- “Reduce this documentation to the minimum useful project context.”
-
-The skill prefers this shape for a simple project:
-
-```markdown
-# Project name
-
-## Goal
-## Current status
-## Key context
-## Decisions
-## Open questions
-## Next actions
-## Resources
+```text
+Organize the names of all conversations in this project.
+Use Category｜Topic titles based on each conversation's full content.
 ```
 
-It splits information into `DECISIONS.md`, `TASKS.md`, `STATUS.md`, or `CONTEXT.md` only when one file has become genuinely hard to use.
+If DSH cannot access or rename project conversations, the Skill should stop, explain the missing capability, and provide a proposed title mapping when possible.
 
 ## Architecture
 
-- [`skills/project-organizer/SKILL.md`](skills/project-organizer/SKILL.md) contains the agent workflow.
-- [`src/index.ts`](src/index.ts) loads that file and registers it with the DSH Skill registry.
+- [`skills/project-organizer/SKILL.md`](skills/project-organizer/SKILL.md) contains the host-aware naming workflow.
+- [`src/index.ts`](src/index.ts) loads the Skill and registers it with the DSH Skill registry.
 - [`cordis.patch.yml`](cordis.patch.yml) mounts the runtime plugin into a DSH profile.
 - `package.json` declares `dsh.bundle.patch`, making the package installable with `dsh plugin add`.
 
@@ -99,7 +111,7 @@ npm run check
 npm pack --dry-run
 ```
 
-Validate the standalone Skill with the Agent Skills validator:
+Validate the standalone Skill:
 
 ```bash
 python3 /path/to/skill-creator/scripts/quick_validate.py skills/project-organizer
@@ -108,14 +120,13 @@ python3 /path/to/skill-creator/scripts/quick_validate.py skills/project-organize
 ## Publishing checklist
 
 - Publish the repository publicly on GitHub.
-- Add topics: `dsh-plugin`, `deepseek-harness`, `agent-skills`, `ai-agents`, `context-engineering`, `project-management`.
+- Add topics: `dsh-plugin`, `deepseek-harness`, `agent-skills`, `ai-agents`, `chatgpt`, `conversation-management`.
 - Keep `dsh.bundle.patch`, `cordis.patch.yml`, built `lib/`, and the Skill in the published package.
-- Publish the prebuilt package to npm for the smoothest install experience.
-- After the repository is working and maintained, add one neutral English line and one neutral Chinese line to the matching category in [`awesome-dsh-plugin/awesome-dsh-plugin`](https://github.com/awesome-dsh-plugin/awesome-dsh-plugin).
+- Keep community listings in draft or experimental status until the DSH workflow is tested end to end.
 
-## Security
+## Security and scope
 
-Skills are trusted instructions and plugins are third-party code. Review the source before installing, prefer a pinned commit for GitHub installs, and do not authorize destructive archival actions without checking the proposed scope.
+Review third-party plugins before installation. This Skill requests only conversation listing, reading, renaming, and verification within the selected project. It must not modify message contents or archive, delete, move, or merge conversations.
 
 ## License
 
