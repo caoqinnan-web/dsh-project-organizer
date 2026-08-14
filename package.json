@@ -1,7 +1,7 @@
 {
   "name": "dsh-project-organizer",
   "version": "0.2.0",
-  "description": "Rename project conversations into clear, content-based Category｜Topic titles.",
+  "description": "ChatGPT-verified Skill for renaming project conversations; the bundled DSH adapter is currently unsupported.",
   "type": "module",
   "main": "lib/index.js",
   "types": "lib/types/index.d.ts",
@@ -16,8 +16,6 @@
     "url": "https://github.com/caoqinnan-web/dsh-project-organizer/issues"
   },
   "keywords": [
-    "dsh-plugin",
-    "deepseek-harness",
     "agent-skills",
     "ai-agents",
     "chatgpt",

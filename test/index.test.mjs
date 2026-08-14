@@ -14,6 +14,8 @@ test('parses the packaged Skill and keeps the conversation-renaming workflow', a
     assert.match(skill.content, new RegExp(`### \\d+\\. ${stage}`))
   }
   assert.match(skill.content, /Category｜Topic/)
+  assert.match(skill.content, /Compatibility gate/)
+  assert.match(skill.content, /DeepSeek Harness Agent could not complete/)
   assert.match(skill.content, /Do not create project summaries/)
   assert.match(skill.content, /Do not archive, delete, move, merge/)
 })

@@ -1,11 +1,18 @@
 ---
 name: project-organizer
-description: Rename project conversations from vague or misleading AI-generated titles into clear, content-based `Category｜Topic` names. Use when a user asks to organize, standardize, clean up, or batch rename the conversations or chats inside a project so each title reveals the conversation's purpose.
+description: Rename project conversations from vague or misleading AI-generated titles into clear, content-based `Category｜Topic` names. Use when a user asks to organize, standardize, clean up, or batch rename the conversations inside a project and the Agent host exposes project-level conversation listing, full-content reading, title updates, and result rereading.
 ---
 
 # Project Conversation Organizer
 
 Rename conversations in the selected project so the conversation list becomes an accurate, scannable index of the work. Base every title on the conversation's full content, not only its current title.
+
+## Compatibility gate
+
+- Proceed only when the host can identify the selected project, list all of its conversations with stable identifiers, read their complete accessible contents, update titles by identifier, and reread the results.
+- Stop before classification or mutation when any required capability is unavailable. State exactly which capability is missing.
+- Do not simulate completion by renaming only the current conversation, editing a local file, or returning invented mappings.
+- Known status: the author verified this workflow in ChatGPT. The author's latest end-to-end test in the current DeepSeek Harness Agent could not complete project conversation organization, so treat DSH as unsupported until a later verified test establishes otherwise.
 
 ## Boundaries
 
@@ -13,8 +20,8 @@ Rename conversations in the selected project so the conversation list becomes an
 - Rename conversation titles only. Do not archive, delete, move, merge, or edit conversation content.
 - Do not create project summaries, handoff documents, task files, or `PROJECT.md`.
 - Treat the user's request to organize the selected project's conversation names as authorization to rename those titles, unless the user explicitly requests a preview, proposal, or dry run.
-- Before changing anything, verify that the host can list project conversations, read their content, rename them, and reread the result.
-- If the host lacks any required capability, do not claim completion. Produce a proposed old-to-new title mapping when possible and identify the missing capability.
+- Before changing anything, apply the compatibility gate.
+- If the host can read but cannot rename, produce a proposed old-to-new title mapping only when the user asks for a preview or alternative output. Do not present the mapping as completed work.
 
 ## Naming format
 
