@@ -99,3 +99,5 @@ Return a concise result containing:
 - verified `old title → new title` mappings;
 - failures or host capability limitations;
 - explicit confirmation that no conversation content or project structure was changed.
+
+When the compatibility gate prevents inventory, report counts as unavailable rather than inventing zeros or estimated totals.
