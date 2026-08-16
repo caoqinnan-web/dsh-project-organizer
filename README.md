@@ -6,6 +6,14 @@ This Skill organizes the sessions in the current DSH workspace through the host'
 
 [中文说明](README.zh-CN.md)
 
+## Usage
+
+1. Open the DeepSeek Harness workspace you want to organize.
+2. Start a new session in that workspace.
+3. Say **“整理对话”** (or “整理会话” / “整理工作区会话” / “清理会话”, etc.).
+
+The Skill then inventories the workspace's sessions, renames them as `类别｜主题`, and reports archive/rename/judgment suggestions.
+
 ## Compatibility
 
 | Environment | Status | Notes |
