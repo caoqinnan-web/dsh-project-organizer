@@ -1,4 +1,0 @@
-interface:
-  display_name: "Project Conversation Organizer"
-  short_description: "Rename project chats as clear Category｜Topic titles"
-  default_prompt: "Use $project-organizer to read every conversation in this project and rename unclear titles using the Category｜Topic format."

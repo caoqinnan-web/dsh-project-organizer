@@ -3,21 +3,20 @@ import { readFile } from 'node:fs/promises'
 import test from 'node:test'
 import { apply, parseSkill } from '../lib/index.js'
 
-test('parses the packaged Skill and keeps the conversation-renaming workflow', async () => {
-  const markdown = await readFile(new URL('../skills/project-organizer/SKILL.md', import.meta.url), 'utf8')
+test('parses the packaged Skill and keeps the workspace-session workflow', async () => {
+  const markdown = await readFile(new URL('../skills/organize-workspace-sessions/SKILL.md', import.meta.url), 'utf8')
   const skill = parseSkill(markdown)
 
-  assert.equal(skill.name, 'project-organizer')
-  assert.match(skill.description, /conversation/i)
-  assert.match(skill.description, /rename/i)
-  for (const stage of ['Scope', 'Inventory', 'Read', 'Classify', 'Rename', 'Verify']) {
+  assert.equal(skill.name, 'organize-workspace-sessions')
+  assert.match(skill.description, /整理会话|organize/i)
+  assert.match(skill.description, /改名|rename/i)
+  for (const stage of ['锁定当前工作区', '建立可见清单', '阅读真实内容', '按删除安全性分级', '归档：暂不执行', '重命名所有可见会话', '回读验收']) {
     assert.match(skill.content, new RegExp(`### \\d+\\. ${stage}`))
   }
-  assert.match(skill.content, /Category｜Topic/)
-  assert.match(skill.content, /Compatibility gate/)
-  assert.match(skill.content, /DeepSeek Harness Agent could not complete/)
-  assert.match(skill.content, /Do not create project summaries/)
-  assert.match(skill.content, /Do not archive, delete, move, merge/)
+  assert.match(skill.content, /类别｜主题/)
+  assert.match(skill.content, /session\.rename/)
+  assert.match(skill.content, /workspace\.list/)
+  assert.match(skill.content, /不执行归档/)
 })
 
 test('registers the Skill with the DSH runtime service', () => {
@@ -33,9 +32,9 @@ test('registers the Skill with the DSH runtime service', () => {
       resourceKind: registrations[0].resourceBase.kind,
     },
     {
-      name: 'project-organizer',
+      name: 'organize-workspace-sessions',
       source: 'bundled',
-      provider: 'dsh-project-organizer',
+      provider: 'organize-workspace-sessions',
       resourceKind: 'directory',
     },
   )

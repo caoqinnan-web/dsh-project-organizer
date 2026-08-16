@@ -1,94 +1,72 @@
-# Project Conversation Organizer
+# Organize Workspace Sessions
 
-Rename vague AI-generated project conversation titles into clear, content-based `Category｜Topic` names.
+Rename DeepSeek Harness (DSH) workspace sessions into clear, content-based `类别｜主题` (Category｜Topic) titles, and report safe-to-archive / rename / needs-judgment suggestions.
 
-This is an open-source Agent Skill created and verified in ChatGPT. DeepSeek Harness / DSH is currently **not supported** because the author’s end-to-end test could not complete project conversation renaming.
+This Skill organizes the sessions in the current DSH workspace through the host's local RPC interface (`workspace.list` / `session.list` / `session.history` / `session.rename`). It renames every visible session to `类别｜主题`. Because DSH currently has no way to view archived sessions, it does **not** archive anything — it only lists safe-to-archive candidates in the report.
 
 [中文说明](README.zh-CN.md)
 
 ## Compatibility
 
-| Environment | Status | Evidence |
+| Environment | Status | Notes |
 |---|---|---|
-| ChatGPT | Verified by the author | Direct invocation renamed the conversations in the selected project. |
-| DeepSeek Harness / DSH | Not currently supported | The author tested the current DSH Agent and it could not organize the project’s conversation titles. |
-| Other Agent hosts | Capability-dependent | The host must expose project-level conversation listing, full-content reading, title updates, and result rereading. |
-
-The repository previously included an experimental DSH adapter and was submitted to a DSH community list before a live end-to-end test. That submission has been withdrawn. The adapter source remains temporarily for research and history, but it must not be presented as working DSH support.
-
-## Origin
-
-This Skill began in ChatGPT.
-
-Projects often accumulate many conversations whose titles were generated automatically by AI. Those titles can be vague, repetitive, or based only on the opening request, so the conversation list no longer reveals what each conversation actually contains.
-
-The author created this Skill to read each conversation’s full content, identify its overall category and concrete topic, and rename it as `Category｜Topic`. The goal is simple: understand what a conversation is for by looking at its title.
+| DeepSeek Harness / DSH | ✅ Supported | Renames workspace sessions via the host's local RPC interface. |
+| ChatGPT | ✅ Supported | Verified by the author (the same Category｜Topic renaming workflow). |
+| Claude | ❌ Not supported | Tested by the author; Claude does not expose the required capabilities. |
+| Other Agent hosts | Capability-dependent | The host must expose session listing, full-content reading, title updates, and result rereading. |
 
 ## What the Skill does
 
 ```text
-Scope → Inventory → Read → Classify → Rename → Verify
+锁定工作区 → 建立清单 → 阅读正文 → 分级 → 改名 → 回读验证
 ```
 
-- Limits all operations to the selected project.
-- Reads the complete accessible conversation instead of trusting the old title.
-- Assigns a stable content category and a concrete topic.
-- Uses exactly one full-width separator: `Category｜Topic`.
-- Preserves titles that are already accurate and compliant.
-- Rereads the project conversation list to verify every change.
+- Locks to the current workspace and reconciles visible sessions against archived ones.
+- Reads each session's real content (only `source.kind === "user"` messages count as the user's question).
+- Classifies each session as A (safe-to-archive), B (needs judgment), or C (keep).
+- Renames every visible session as `类别｜主题` (exactly one full-width separator).
+- Because DSH has no archive-view entry, it does **not** archive; A-class sessions are reported as archive suggestions.
+- Rereads the session list to verify every rename.
 
-It changes conversation titles only. It does not create project documents, edit message content, move conversations, archive conversations, or delete anything.
+It changes session titles only. It does not archive, delete, move, merge, or edit session content.
 
-## Use in ChatGPT
+## How it works
 
-With the Skill available in a ChatGPT project, invoke it directly:
+The Skill drives the DSH host through its local RPC interface (`POST /api/<method>` on `$DSH_WEB_URL`, default `http://127.0.0.1:3080`):
 
-```text
-Organize the names of all conversations in this project.
-Read each complete conversation and rename it using Category｜Topic.
+- `workspace.list` / `session.list` — inventory
+- `session.history` — read real content
+- `session.rename` — pin a `类别｜主题` title
+- `workspace.archiveSession` — documented but intentionally not called for now
+
+It ships two helper scripts:
+
+- `skills/organize-workspace-sessions/scripts/dsh_rpc.sh` — the RPC envelope
+- `skills/organize-workspace-sessions/scripts/session_digest.py` — one-pass content digest for fast grading
+
+## Installation
+
+As a DSH plugin:
+
+```bash
+dsh plugin --profile web add "github:caoqinnan-web/organize-workspace-sessions#main"
 ```
 
-The author has verified this workflow in ChatGPT. This repository does not claim that npm is a ChatGPT Skill installation mechanism.
-
-## Required host capabilities
-
-The workflow can run only when the Agent host can:
-
-1. identify the selected project;
-2. list all conversations in that project with stable IDs;
-3. read their complete accessible content;
-4. update a conversation title by stable ID;
-5. reread the list and verify the result.
-
-If any capability is missing, the Skill must stop and report the limitation. It may provide a proposed title mapping only when it can read the necessary conversations.
+Or use the skill folder directly: drop `skills/organize-workspace-sessions` into your skills directory.
 
 ## Repository structure
 
-- [`skills/project-organizer/SKILL.md`](skills/project-organizer/SKILL.md) contains the host-independent conversation naming workflow.
-- [`skills/project-organizer/agents/openai.yaml`](skills/project-organizer/agents/openai.yaml) contains Skill interface metadata.
-- `src/`, `cordis.patch.yml`, and `dsh.bundle` are the paused experimental DSH adapter. They do not establish working DSH compatibility.
+- `skills/organize-workspace-sessions/SKILL.md` — the skill instructions.
+- `skills/organize-workspace-sessions/scripts/` — helper scripts (`dsh_rpc.sh`, `session_digest.py`).
+- `skills/organize-workspace-sessions/agents/openai.yaml` — interface metadata.
+- `src/`, `cordis.patch.yml` — the DSH plugin wrapper that registers the skill.
 
 ## Development and validation
 
 ```bash
 npm install
 npm run check
-python3 /path/to/skill-creator/scripts/quick_validate.py skills/project-organizer
 ```
-
-These checks validate Skill structure, parsing, build output, and adapter registration only. They do not validate project conversation renaming in DSH.
-
-## Distribution status
-
-- The Skill remains public for ChatGPT use and host-independent development.
-- DSH installation is not recommended.
-- Published npm versions are deprecated pending real DSH support.
-- The DSH community listing has been withdrawn.
-- The project should not use the `dsh-plugin` topic or be resubmitted until an end-to-end DSH test passes.
-
-## Security and scope
-
-The Skill must operate only inside the selected project and only on conversation titles. Review the proposed scope before granting a host permission to rename conversations.
 
 ## License
 

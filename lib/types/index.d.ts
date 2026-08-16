@@ -1,7 +1,7 @@
-/** Register the packaged Project Organizer skill with DeepSeek Harness. */
+/** Register the packaged organize-workspace-sessions skill with DeepSeek Harness. */
 import type { Context } from '@deepseek-ai/cordis';
 import type { SkillRegistration } from '@deepseek-ai/dsh-skill';
-export declare const name = "project-organizer";
+export declare const name = "organize-workspace-sessions";
 export declare const inject: string[];
 type ParsedSkill = Pick<SkillRegistration, 'name' | 'description' | 'content'>;
 /** Parse the deliberately small, dependency-free frontmatter used by this package. */

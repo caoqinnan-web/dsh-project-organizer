@@ -1,0 +1,7 @@
+interface:
+  display_name: "工作区会话整理"
+  short_description: "把工作区会话改名为 类别｜主题，建议归档并报告待判断项"
+  default_prompt: "使用 $organize-workspace-sessions 整理当前工作区会话：读取全部可见会话，改名为 类别｜主题，并输出建议归档/改名/待判断报告。"
+
+policy:
+  allow_implicit_invocation: true

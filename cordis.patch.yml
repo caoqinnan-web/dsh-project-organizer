@@ -1,4 +1,4 @@
 # Install the runtime provider into the selected DSH profile.
 - insert:
-    - id: project-organizer
-      name: 'dsh-project-organizer'
+    - id: organize-workspace-sessions
+      name: 'organize-workspace-sessions'

@@ -1,7 +1,7 @@
 {
-  "name": "dsh-project-organizer",
-  "version": "0.2.0",
-  "description": "ChatGPT-verified Skill for renaming project conversations; the bundled DSH adapter is currently unsupported.",
+  "name": "organize-workspace-sessions",
+  "version": "1.0.0",
+  "description": "DSH Skill for organizing DeepSeek Harness workspace sessions: rename them as 类别｜主题 and report archive/rename/judgment suggestions. ChatGPT supported; Claude not supported.",
   "type": "module",
   "main": "lib/index.js",
   "types": "lib/types/index.d.ts",
@@ -9,16 +9,18 @@
   "author": "caoqinnan-web",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/caoqinnan-web/dsh-project-organizer.git"
+    "url": "git+https://github.com/caoqinnan-web/organize-workspace-sessions.git"
   },
-  "homepage": "https://github.com/caoqinnan-web/dsh-project-organizer#readme",
+  "homepage": "https://github.com/caoqinnan-web/organize-workspace-sessions#readme",
   "bugs": {
-    "url": "https://github.com/caoqinnan-web/dsh-project-organizer/issues"
+    "url": "https://github.com/caoqinnan-web/organize-workspace-sessions/issues"
   },
   "keywords": [
+    "deepseek-harness",
+    "dsh",
     "agent-skills",
-    "ai-agents",
-    "chatgpt",
+    "session-management",
+    "workspace",
     "conversation-management"
   ],
   "scripts": {
@@ -49,14 +51,16 @@
       "default": "./lib/index.js"
     },
     "./cordis.patch.yml": "./cordis.patch.yml",
-    "./skills/project-organizer/SKILL.md": "./skills/project-organizer/SKILL.md",
+    "./skills/organize-workspace-sessions/SKILL.md": "./skills/organize-workspace-sessions/SKILL.md",
     "./package.json": "./package.json"
   },
   "files": [
     "lib",
     "src",
-    "skills/project-organizer/SKILL.md",
-    "skills/project-organizer/agents/openai.yaml",
+    "skills/organize-workspace-sessions/SKILL.md",
+    "skills/organize-workspace-sessions/agents/openai.yaml",
+    "skills/organize-workspace-sessions/scripts/dsh_rpc.sh",
+    "skills/organize-workspace-sessions/scripts/session_digest.py",
     "cordis.patch.yml",
     "README.md",
     "README.zh-CN.md",
